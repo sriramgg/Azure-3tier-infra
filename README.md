@@ -119,5 +119,4 @@ azurerm_resource_group.main_rg: Destruction complete after 12s
 Destroy complete! Resources: 12 destroyed.
 🟢 Current Running Architecture Cost: ₹0 (Successfully Terminated)
 ```
-### Technical Review Defense Script
-"Sir, as a cloud engineer, cost control and resource lifecycle management are critical parameters. To prevent dynamic cost spending leaks on active running nodes while practicing production-level multi-tier enterprise network layouts, I utilized declarative Infrastructure-as-Code scripts via Terraform. I successfully completed cross-platform operational connectivity checks and securely recorded absolute baseline console logs evidence snapshots straight inside my GitHub code repository profile. Post operational confirmations, I programmatically invoked automated resource tear-down protocols using localized destroy modules to target strict continuous financial efficiency optimization standards directly."
+
