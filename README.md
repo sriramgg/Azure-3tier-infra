@@ -1,4 +1,4 @@
-# Automated 3-Tier Enterprise Infrastructure via IaC (Project 1)
+# Automated 3-Tier Enterprise Infrastructure via IaC
 
 ## Project Overview
 This repository showcases a production-grade enterprise network topology built dynamically using Infrastructure-as-Code (IaC). It creates secure, isolated network boundaries on Microsoft Azure to host web applications under strict security compliance and cost-optimization parameters.
