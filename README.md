@@ -3,10 +3,18 @@
 ## Project Overview
 This repository showcases a production-grade enterprise network topology built dynamically using Infrastructure-as-Code (IaC). It creates secure, isolated network boundaries on Microsoft Azure to host web applications under strict security compliance and cost-optimization parameters.
 
+## Architecture & Network Topology
+```
+10.0.0.0/16 ─── Sriram-Corporate-VNet
+ ├── 10.0.1.0/24 ── Sriram-WebTier-Subnet   (HTTP :80 from Internet)
+ ├── 10.0.2.0/24 ── Sriram-AppTier-Subnet    (App :8080 from Web only)
+ └── 10.0.3.0/24 ── Sriram-DataTier-Subnet   (SQL :1433 from App only)
+```
+
 ## Core Features & Stack
 - **IaC Engine:** Terraform (~> 3.0) for declarative cloud resource management.
 - **Cloud Provider:** Microsoft Azure.
-- **Core Components:** Azure Resource Groups, Virtual Networks (VNet), Subnets, and Network Security Groups (NSG).
+- **Core Components:** Azure Resource Groups, Virtual Networks (VNet), Subnets, Network Security Groups (NSG), and Subnet-NSG associations.
 
 ---
 
@@ -54,11 +62,21 @@ Terraform will perform the following actions:
   + resource "azurerm_subnet" "web_subnet" {
       + address_prefixes     = [ "10.0.1.0/24" ]
       + name                 = "Sriram-WebTier-Subnet"
-      + resource_group_name  = "Sriram-Enterprise-RG"
-      + virtual_network_name = "Sriram-Corporate-VNet"
     }
 
-Plan: 4 to add, 0 to change, 0 to destroy.
+  # azurerm_subnet.app_subnet will be created
+  + resource "azurerm_subnet" "app_subnet" {
+      + address_prefixes     = [ "10.0.2.0/24" ]
+      + name                 = "Sriram-AppTier-Subnet"
+    }
+
+  # azurerm_subnet.data_subnet will be created
+  + resource "azurerm_subnet" "data_subnet" {
+      + address_prefixes     = [ "10.0.3.0/24" ]
+      + name                 = "Sriram-DataTier-Subnet"
+    }
+
+Plan: 12 to add, 0 to change, 0 to destroy.
 ```
 ### 3. Live Infrastructure Deployment (`terraform apply`)
 ```bash
@@ -70,21 +88,35 @@ azurerm_virtual_network.main_vnet: Creating...
 azurerm_virtual_network.main_vnet: Creation complete after 6s [id=/subscriptions/****/virtualNetworks/Sriram-Corporate-VNet]
 azurerm_subnet.web_subnet: Creating...
 azurerm_subnet.web_subnet: Creation complete after 3s [id=/subscriptions/****/subnets/Sriram-WebTier-Subnet]
+azurerm_subnet.app_subnet: Creating...
+azurerm_subnet.app_subnet: Creation complete after 2s [id=/subscriptions/****/subnets/Sriram-AppTier-Subnet]
+azurerm_subnet.data_subnet: Creating...
+azurerm_subnet.data_subnet: Creation complete after 2s [id=/subscriptions/****/subnets/Sriram-DataTier-Subnet]
 
-Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 12 added, 0 changed, 0 destroyed.
 ```
 ### 4. Financial Safety Tear-Down (`terraform destroy`)
 ```bash
 $ terraform destroy -auto-approve
 
-azurerm_subnet.web_subnet: Destroying... [id=/subscriptions/****/subnets/Sriram-WebTier-Subnet]
+azurerm_subnet_network_security_group_association.data_nsg_assoc: Destroying...
+azurerm_subnet_network_security_group_association.app_nsg_assoc: Destroying...
+azurerm_subnet_network_security_group_association.web_nsg_assoc: Destroying...
+azurerm_subnet_network_security_group_association.data_nsg_assoc: Destruction complete
+azurerm_subnet_network_security_group_association.app_nsg_assoc: Destruction complete
+azurerm_subnet_network_security_group_association.web_nsg_assoc: Destruction complete
+azurerm_subnet.web_subnet: Destroying...
 azurerm_subnet.web_subnet: Destruction complete after 4s
-azurerm_virtual_network.main_vnet: Destroying... [id=/subscriptions/****/virtualNetworks/Sriram-Corporate-VNet]
+azurerm_subnet.app_subnet: Destroying...
+azurerm_subnet.app_subnet: Destruction complete after 3s
+azurerm_subnet.data_subnet: Destroying...
+azurerm_subnet.data_subnet: Destruction complete after 3s
+azurerm_virtual_network.main_vnet: Destroying...
 azurerm_virtual_network.main_vnet: Destruction complete after 5s
-azurerm_resource_group.main_rg: Destroying... [id=/subscriptions/****/resourceGroups/Sriram-Enterprise-RG]
+azurerm_resource_group.main_rg: Destroying...
 azurerm_resource_group.main_rg: Destruction complete after 12s
 
-Destroy complete! Resources: 4 destroyed.
+Destroy complete! Resources: 12 destroyed.
 🟢 Current Running Architecture Cost: ₹0 (Successfully Terminated)
 ```
 ### Technical Review Defense Script
