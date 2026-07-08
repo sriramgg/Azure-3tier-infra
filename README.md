@@ -1,122 +1,87 @@
 # Automated 3-Tier Enterprise Infrastructure via IaC
 
-## Project Overview
-This repository showcases a production-grade enterprise network topology built dynamically using Infrastructure-as-Code (IaC). It creates secure, isolated network boundaries on Microsoft Azure to host web applications under strict security compliance and cost-optimization parameters.
+[![Terraform](https://img.shields.io/badge/IaC-Terraform-7B42BC?logo=terraform)](https://www.terraform.io)
+[![Azure](https://img.shields.io/badge/Cloud-Azure-0078D4?logo=microsoftazure)](https://azure.microsoft.com)
+[![License](https://img.shields.io/badge/License-MIT-green)](#)
 
-## Architecture & Network Topology
-```
-10.0.0.0/16 ─── Sriram-Corporate-VNet
- ├── 10.0.1.0/24 ── Sriram-WebTier-Subnet   (HTTP :80 from Internet)
- ├── 10.0.2.0/24 ── Sriram-AppTier-Subnet    (App :8080 from Web only)
- └── 10.0.3.0/24 ── Sriram-DataTier-Subnet   (SQL :1433 from App only)
-```
-
-## Core Features & Stack
-- **IaC Engine:** Terraform (~> 3.0) for declarative cloud resource management.
-- **Cloud Provider:** Microsoft Azure.
-- **Core Components:** Azure Resource Groups, Virtual Networks (VNet), Subnets, Network Security Groups (NSG), and Subnet-NSG associations.
+A production-grade, fully isolated **3-tier network topology** on Microsoft Azure, provisioned entirely through declarative Infrastructure-as-Code using Terraform.
 
 ---
 
-## 🛠️ Execution & Deployment Verification Logs
+## Skills Demonstrated
 
-To maintain strict cost efficiency and prevent idle resource billing arrays, this network infrastructure uses an ephemeral model. The configuration is compiled locally, verified, and safely destroyed. Below are the terminal validation traces.
+`Terraform` `Azure Networking` `Infrastructure-as-Code` `Network Security` `Subnet Isolation` `NSG Rules` `Cloud Architecture` `Cost Optimization`
 
-### 1. Workspace Initialization (`terraform init`)
-```bash
-$ terraform init
+---
 
-Initializing the backend...
-Initializing provider plugins...
-- Finding hashicorp/azurerm versions match "~> 3.0"...
-- Installing hashicorp/azurerm v3.100.0...
-- Installed hashicorp/azurerm v3.100.0 (signed by HashiCorp)
+## Architecture
 
-Terraform has been successfully initialized!
 ```
-### 2. Syntax Compilation & Resource Dry-Run (`terraform plan`)
-```bash
-$ terraform plan
-
-Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
-  + create
-
-Terraform will perform the following actions:
-
-  # azurerm_resource_group.main_rg will be created
-  + resource "azurerm_resource_group" "main_rg" {
-      + id       = (known after apply)
-      + location = "eastus"
-      + name     = "Sriram-Enterprise-RG"
-    }
-
-  # azurerm_virtual_network.main_vnet will be created
-  + resource "azurerm_virtual_network" "main_vnet" {
-      + address_space       = [ "10.0.0.0/16" ]
-      + location            = "eastus"
-      + name                = "Sriram-Corporate-VNet"
-      + resource_group_name = "Sriram-Enterprise-RG"
-    }
-
-  # azurerm_subnet.web_subnet will be created
-  + resource "azurerm_subnet" "web_subnet" {
-      + address_prefixes     = [ "10.0.1.0/24" ]
-      + name                 = "Sriram-WebTier-Subnet"
-    }
-
-  # azurerm_subnet.app_subnet will be created
-  + resource "azurerm_subnet" "app_subnet" {
-      + address_prefixes     = [ "10.0.2.0/24" ]
-      + name                 = "Sriram-AppTier-Subnet"
-    }
-
-  # azurerm_subnet.data_subnet will be created
-  + resource "azurerm_subnet" "data_subnet" {
-      + address_prefixes     = [ "10.0.3.0/24" ]
-      + name                 = "Sriram-DataTier-Subnet"
-    }
-
-Plan: 12 to add, 0 to change, 0 to destroy.
-```
-### 3. Live Infrastructure Deployment (`terraform apply`)
-```bash
-$ terraform apply -auto-approve
-
-azurerm_resource_group.main_rg: Creating...
-azurerm_resource_group.main_rg: Creation complete after 2s [id=/subscriptions/****/resourceGroups/Sriram-Enterprise-RG]
-azurerm_virtual_network.main_vnet: Creating...
-azurerm_virtual_network.main_vnet: Creation complete after 6s [id=/subscriptions/****/virtualNetworks/Sriram-Corporate-VNet]
-azurerm_subnet.web_subnet: Creating...
-azurerm_subnet.web_subnet: Creation complete after 3s [id=/subscriptions/****/subnets/Sriram-WebTier-Subnet]
-azurerm_subnet.app_subnet: Creating...
-azurerm_subnet.app_subnet: Creation complete after 2s [id=/subscriptions/****/subnets/Sriram-AppTier-Subnet]
-azurerm_subnet.data_subnet: Creating...
-azurerm_subnet.data_subnet: Creation complete after 2s [id=/subscriptions/****/subnets/Sriram-DataTier-Subnet]
-
-Apply complete! Resources: 12 added, 0 changed, 0 destroyed.
-```
-### 4. Financial Safety Tear-Down (`terraform destroy`)
-```bash
-$ terraform destroy -auto-approve
-
-azurerm_subnet_network_security_group_association.data_nsg_assoc: Destroying...
-azurerm_subnet_network_security_group_association.app_nsg_assoc: Destroying...
-azurerm_subnet_network_security_group_association.web_nsg_assoc: Destroying...
-azurerm_subnet_network_security_group_association.data_nsg_assoc: Destruction complete
-azurerm_subnet_network_security_group_association.app_nsg_assoc: Destruction complete
-azurerm_subnet_network_security_group_association.web_nsg_assoc: Destruction complete
-azurerm_subnet.web_subnet: Destroying...
-azurerm_subnet.web_subnet: Destruction complete after 4s
-azurerm_subnet.app_subnet: Destroying...
-azurerm_subnet.app_subnet: Destruction complete after 3s
-azurerm_subnet.data_subnet: Destroying...
-azurerm_subnet.data_subnet: Destruction complete after 3s
-azurerm_virtual_network.main_vnet: Destroying...
-azurerm_virtual_network.main_vnet: Destruction complete after 5s
-azurerm_resource_group.main_rg: Destroying...
-azurerm_resource_group.main_rg: Destruction complete after 12s
-
-Destroy complete! Resources: 12 destroyed.
-🟢 Current Running Architecture Cost: ₹0 (Successfully Terminated)
+10.0.0.0/16 ─── Sriram-Corporate-VNet
+ ├── 10.0.1.0/24 ── Sriram-WebTier-Subnet   (HTTP :80 from Internet)
+ ├── 10.0.2.0/24 ── Sriram-AppTier-Subnet    (App :8080 from Web tier only)
+ └── 10.0.3.0/24 ── Sriram-DataTier-Subnet   (SQL :1433 from App tier only)
 ```
 
+Each tier is isolated with its own **Network Security Group** enforcing least-privilege ingress:
+- **Web** — accepts public HTTP traffic
+- **App** — accepts traffic only from Web subnet
+- **Data** — accepts traffic only from App subnet
+
+---
+
+## Provisioned Resources
+
+| Resource | Name | Purpose |
+|----------|------|---------|
+| Resource Group | `Sriram-Enterprise-RG` | Logical container for all resources |
+| Virtual Network | `Sriram-Corporate-VNet` | Isolated network space (`10.0.0.0/16`) |
+| Subnet | `Sriram-WebTier-Subnet` | Public-facing web layer |
+| Subnet | `Sriram-AppTier-Subnet` | Business logic layer |
+| Subnet | `Sriram-DataTier-Subnet` | Database layer |
+| NSG | `Sriram-WebTier-NSG` | Allows HTTP :80 inbound |
+| NSG | `Sriram-AppTier-NSG` | Allows :8080 from Web tier |
+| NSG | `Sriram-DataTier-NSG` | Allows :1433 from App tier |
+| NSG Association | Web/App/Data | Attaches each NSG to its subnet |
+
+---
+
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/sriramgg/Azure-3tier-infra.git
+cd Azure-3tier-infra
+
+# Initialize Terraform
+terraform init
+
+# Preview resources to be created
+terraform plan
+
+# Deploy (requires Azure credentials)
+terraform apply -auto-approve
+
+# Teardown when done
+terraform destroy -auto-approve
+```
+
+---
+
+## Cost Optimization Strategy
+
+All infrastructure follows an **ephemeral lifecycle model**. Resources are provisioned on demand for validation, captured in verified terminal logs, and immediately destroyed. This maintains full operational proof without incurring idle cloud billing.
+
+---
+
+## Prerequisites
+
+- Terraform >= 1.3
+- Azure subscription with valid credentials
+- Azure CLI authenticated (`az login`)
+
+---
+
+## License
+
+MIT
